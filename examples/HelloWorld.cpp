@@ -53,5 +53,12 @@ void World::sayWorld() {
 
 void World::say(const char* world) {
     Log::i(LOG_TAG, world);
-    mHello.sayHello(1000);
+    mHello.sayHello();
+    mHello.sayHello();
+    mHello.sayHello();
+    mHello.sayHello();
+    mHello.sayHello();
+    mHello.sayHello();
+    mHello.sayHello();
+    mHello.sayHello();
 }

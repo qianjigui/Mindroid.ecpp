@@ -33,6 +33,7 @@ public:
     Message(Handler& handler, const int32_t what);
     Message(Handler& handler, const int32_t what, const int32_t arg1, const int32_t arg2);
     Message(Handler& handler, const int32_t what, void* const obj);
+    Message(Handler& handler, const Message& msg);
 
     Message& operator=(const Message& message);
 

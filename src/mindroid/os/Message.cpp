@@ -41,6 +41,16 @@ Message::Message(Handler& handler) :
         nextMessage(NULL) {
 }
 
+Message::Message(Handler& handler, const Message& msg) :
+        what(msg.what),
+        arg1(msg.arg1),
+        arg2(msg.arg2),
+        obj(msg.obj),
+        when(0xFFFFFFFFFFFFFFFF),
+        target(&handler),
+        nextMessage(NULL) {
+}
+
 Message::Message(Handler& handler, const int32_t what) :
         what(what),
         arg1(0),

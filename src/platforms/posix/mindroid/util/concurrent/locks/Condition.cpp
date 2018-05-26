@@ -23,7 +23,9 @@ namespace mindroid {
 
 Condition::Condition() {
     pthread_condattr_init(&mConditionAttributes);
+#ifndef MACOSX
     pthread_condattr_setclock(&mConditionAttributes, CLOCK_MONOTONIC);
+#endif
     pthread_cond_init(&mCondition, &mConditionAttributes);
 }
 

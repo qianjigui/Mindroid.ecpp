@@ -7,11 +7,12 @@ AR := ar
 RM := rm
 INCLUDES := -I../src -I../src/platforms/posix
 CFLAGS := -c -g -O0
-LDFLAGS := -lmindroid -lpthread -lrt -L../libs/posix
+#LDFLAGS := -lmindroid -lpthread -lrt -L../libs/posix
+LDFLAGS := -lmindroid -lpthread -L../libs/posix
 
 SRCS = Main.cpp \
-	ServiceManager.cpp \
-	HelloWorld.cpp
+	JServiceManager.cpp \
+	JobHandler.cpp
 
 OBJS = $(SRCS:.cpp=.o)
 
@@ -20,6 +21,7 @@ OBJS = $(SRCS:.cpp=.o)
 
 main: $(OBJS)
 	$(LD) -o $@ $^ $(LDFLAGS)
+	./main
 
 .PHONY: clean
 

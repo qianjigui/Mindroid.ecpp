@@ -2,7 +2,7 @@
 #include "mindroid/os/Looper.h"
 #include "mindroid/os/Thread.h"
 #include "mindroid/os/Handler.h"
-#include "ServiceManager.h"
+#include "JServiceManager.h"
 #include <new>
 
 using namespace mindroid;

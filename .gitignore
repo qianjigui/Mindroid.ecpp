@@ -8,3 +8,7 @@ Release
 lib
 examples/main
 examples/snippets/loopers
+GPATH
+GRTAGS
+GTAGS
+*.swp
