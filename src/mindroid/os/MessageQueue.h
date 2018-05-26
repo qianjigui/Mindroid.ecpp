@@ -35,15 +35,15 @@ public:
     }
 
     bool enqueueMessage(Message& message, uint64_t when);
-    Message* dequeueMessage(Message& message);
+    Message* dequeueMessage();
     bool removeMessages(Handler* handler);
     bool removeMessages(Handler* handler, int32_t what);
     bool removeMessage(Handler* handler, const Message* message);
 
 private:
     bool enqueueMessage(Message& message, uint64_t when, bool signal);
-    Message* dequeueMessage(Message& message, bool wait);
-    Message* getNextMessage(uint64_t now, Message& message);
+    Message* dequeueMessage(bool wait);
+    Message* getNextMessage(uint64_t now);
     void signal();
     void quit();
 

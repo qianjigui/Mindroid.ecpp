@@ -66,11 +66,12 @@ bool MessageQueue::enqueueMessage(Message& message, uint64_t when, bool signal) 
     return true;
 }
 
-Message* MessageQueue::dequeueMessage(Message& message) {
-    return dequeueMessage(message, true);
+Message* MessageQueue::dequeueMessage() {
+    return dequeueMessage(true);
 }
 
-Message* MessageQueue::dequeueMessage(Message& message, bool wait) {
+Message* MessageQueue::dequeueMessage(bool wait) {
+    Message* res = NULL;
     while (true) {
         uint64_t now = SystemClock::monotonicTime();
 
@@ -79,8 +80,8 @@ Message* MessageQueue::dequeueMessage(Message& message, bool wait) {
             return NULL;
         }
 
-        if (getNextMessage(now, message) != NULL) {
-            return &message;
+        if ( (res = getNextMessage(now)) != NULL) {
+            return res;
         }
 
         if (wait) {
@@ -98,14 +99,13 @@ Message* MessageQueue::dequeueMessage(Message& message, bool wait) {
     }
 }
 
-Message* MessageQueue::getNextMessage(uint64_t now, Message& message) {
+Message* MessageQueue::getNextMessage(uint64_t now) {
     Message* nextMessage = mHeadMessage;
     if (nextMessage != NULL) {
         if (now >= nextMessage->when) {
             mHeadMessage = nextMessage->nextMessage;
-            message = *nextMessage;
             nextMessage->recycle();
-            return &message;
+            return nextMessage;
         }
     }
     return NULL;

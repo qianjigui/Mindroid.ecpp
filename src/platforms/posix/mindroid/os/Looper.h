@@ -57,7 +57,6 @@ private:
 
     MessageQueue mMessageQueue;
     RunnableQueue mRunnableQueue;
-    Message mMessage;
 
     friend class Handler;
 

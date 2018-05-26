@@ -77,7 +77,7 @@ void Looper::loop() {
     if (me != NULL) {
         MessageQueue& mq = me->mMessageQueue;
         while (true) {
-            Message* message = mq.dequeueMessage(me->mMessage);
+            Message* message = mq.dequeueMessage();
             if (message == NULL) {
                 return;
             }
@@ -94,7 +94,7 @@ void Looper::loop(uint32_t maxLoops) {
         MessageQueue& mq = me->mMessageQueue;
         uint32_t i = 0;
         while (i < maxLoops) {
-            Message* message = mq.dequeueMessage(me->mMessage, false);
+            Message* message = mq.dequeueMessage(false);
             if (message == NULL) {
                 return;
             }
