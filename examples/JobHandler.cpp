@@ -1,4 +1,5 @@
 #include "JobHandler.h"
+#include "mindroid/util/Log.h"
 
 namespace mindroid {
 
@@ -61,11 +62,13 @@ void JobsManager::incAutoPtr(void * data) {
 void JobsManager::destroyMessage(const Message& m) {
     void* data = m.obj;
     if(NULL!=data){
-        AutoPtrData* data = static_cast<AutoPtrData*> (data);
-        if(0==data->dec()){
-            //TODO delete data
+        Log::i("DD", "obj=%p", data);
+        AutoPtrData* d = static_cast<AutoPtrData*> (data);
+        if(0==d->dec()){
+            free(d->obj);
         }
     }
+    //Log::d("D", "delete %x", &&m);
     delete &m;
 }
 
@@ -77,14 +80,19 @@ JobHandler* JobsManager::getJobHandler(uint32_t id) {
 }
 
 
-JobHandler* JobsManager::bindJobHandler(uint32_t id, Message& message){
+Message* JobsManager::bindJobHandler(uint32_t id, Message& message){
     JobHandler* h = getJobHandler(id);
     if(NULL!=h){
+        Log::i("D", "bind message=%p", &message);
         void* obj = message.obj;
-        Message::obtain(message, *h, message.what, message.arg1, message.arg2);
+        message = *h->obtainMessage(message, message.what, message.arg1, message.arg2);
         message.obj=obj;
+        Log::i("D", "bind messagereturn=%p", &message);
+        return &message;
+    } else {
+        destroyMessage(message);
+        return NULL;
     }
-    return h;
 }
 
 JobHandler::JobHandler(JobsManager* m) {
@@ -107,20 +115,23 @@ void JobHandler::handleMessage(const Message& message){
     destroyMessage(message);
 }
 
-void JobHandler::broadcast(Message&) {}
+void JobHandler::broadcast(Message& msg) {
+    manager->broadcast(msg);
+}
 
-void JobHandler::send(uint32_t id, Message& message){
-    JobHandler* h=manager->bindJobHandler(id, message);
-    if(NULL!=h){
-        h->sendMessage(message);
+bool JobHandler::send(uint32_t id, Message& message){
+    Message* m=manager->bindJobHandler(id, message);
+    if(NULL!=m){
+        return m->getTarget()->sendMessage(*m);
     } else {
         destroyMessage(message);
     }
+    return false;
 }
 bool JobHandler::sendDelayed(uint32_t id, Message& message, uint32_t delay){
-    JobHandler* h=manager->bindJobHandler(id, message);
-    if(NULL!=h){
-        return h->sendMessageDelayed(message, delay);
+    Message* m=manager->bindJobHandler(id, message);
+    if(NULL!=m){
+        return m->getTarget()-> sendMessageDelayed(*m, delay);
     } else {
         destroyMessage(message);
     }
@@ -128,9 +139,9 @@ bool JobHandler::sendDelayed(uint32_t id, Message& message, uint32_t delay){
 }
 
 bool JobHandler::sendAtTime(uint32_t id, Message& message, uint64_t uptimeMillis){
-    JobHandler* h=manager->bindJobHandler(id, message);
-    if(NULL!=h){
-        return h->sendMessageAtTime(message, uptimeMillis);
+    Message* m=manager->bindJobHandler(id, message);
+    if(NULL!=m){
+        return m->getTarget()->sendMessageAtTime(*m, uptimeMillis);
     } else {
         destroyMessage(message);
     }

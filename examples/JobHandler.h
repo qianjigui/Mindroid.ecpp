@@ -17,7 +17,7 @@ class JobsManager {
 public:
     JobsManager(uint32_t maxJobs, uint32_t maxMessageTypes);
     JobHandler* getJobHandler(uint32_t id);
-    JobHandler* bindJobHandler(uint32_t id, Message&);
+    Message* bindJobHandler(uint32_t id, Message&);
     void registerJobHandler(JobHandler*);
     void registerBroadcast(int32_t what, JobHandler* handler);
     void broadcast(Message&);
@@ -55,7 +55,7 @@ public:
     void destroyMessage(const Message&);
     void handleMessage(const Message& message);
     void broadcast(Message& message);
-    void send(uint32_t id, Message& message);
+    bool send(uint32_t id, Message& message);
     bool sendDelayed(uint32_t id, Message& message, uint32_t delay);
     bool sendAtTime(uint32_t id, Message& message, uint64_t uptimeMillis);
     uint32_t jobId;
